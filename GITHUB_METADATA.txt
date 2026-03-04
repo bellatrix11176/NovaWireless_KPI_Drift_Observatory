@@ -1,0 +1,68 @@
+# GitHub Repository Metadata
+# Copy these into your GitHub repo settings page
+
+─────────────────────────────────────────────────────────────
+
+REPOSITORY NAME (the URL slug):
+  NovaWireless_KPI_Drift_Observatory
+
+─────────────────────────────────────────────────────────────
+
+REPOSITORY TITLE (displayed at top of repo page):
+  When the Metric Becomes the Target — Goodhart's Law in AI-Optimized Contact Centers
+
+─────────────────────────────────────────────────────────────
+
+DESCRIPTION (the one-line blurb under the repo name, 350 char max):
+  Empirical evidence of Goodhart's Law in AI-optimized call center operations. Synthetic 82,305-call dataset, five-section evidence pipeline, and a System Integrity Index (SII) governance framework. Proxy FCR vs. true resolution gap: 20pp. TER delta: −0.02pp. KPI is informationally neutral.
+
+─────────────────────────────────────────────────────────────
+
+WEBSITE (optional — your portfolio or paper URL):
+  https://[your-site].com
+
+─────────────────────────────────────────────────────────────
+
+TOPICS / TAGS (GitHub allows up to 20 — paste these in):
+  goodharts-law
+  campbells-law
+  ai-safety
+  ai-alignment
+  reward-hacking
+  specification-gaming
+  call-center
+  contact-center
+  kpi
+  proxy-metrics
+  measurement-validity
+  synthetic-dataset
+  data-science
+  machine-learning
+  governance
+  streamlit
+  python
+  reproducible-research
+  system-integrity-index
+  nlp
+
+─────────────────────────────────────────────────────────────
+
+SOCIAL PREVIEW IMAGE:
+  Use: assets/NovaWirelessAIOperations.png
+  (Upload in Settings → Social Preview — this is what appears
+   when the repo is shared on LinkedIn, Twitter/X, Slack, etc.)
+
+─────────────────────────────────────────────────────────────
+
+ALTERNATIVE DESCRIPTIONS (shorter options if 350 chars feels long):
+
+  Option A — Finding-forward (150 chars):
+  Synthetic call center dataset demonstrating Goodhart's Law in AI optimization. Proxy FCR gap: 20pp. KPI is informationally neutral. System Integrity Index governance framework.
+
+  Option B — Framework-forward (180 chars):
+  A reproducible research dataset and System Integrity Index (SII) for detecting Goodhart's Law in AI-optimized contact center operations. 82,305 synthetic calls. Python + Streamlit.
+
+  Option C — Academic-forward (220 chars):
+  Empirical evidence of Goodhart's Law, Campbell's Law, and specification gaming in contact center AI systems. Synthetic dataset, five-section evidence pipeline, and governance framework with peer-reviewed citations.
+
+─────────────────────────────────────────────────────────────

@@ -1,0 +1,206 @@
+
+======================================================================
+NovaWireless KPI Drift Observatory — SII Hardening Pipeline
+======================================================================
+
+======================================================================
+DATA LOADING — SII HARDENING PIPELINE
+======================================================================
+  calls_sanitized_2025-01.csv  rows=6,932  SHA256=7c359333302e450f...
+  calls_sanitized_2025-02.csv  rows=6,819  SHA256=49397ad8f170f327...
+  calls_sanitized_2025-03.csv  rows=6,834  SHA256=eeb1873577108e3e...
+  calls_sanitized_2025-04.csv  rows=6,874  SHA256=96a7271f32258db7...
+  calls_sanitized_2025-05.csv  rows=6,862  SHA256=c7920c9e2ab7defe...
+  calls_sanitized_2025-06.csv  rows=6,830  SHA256=df9a61039a336394...
+  calls_sanitized_2025-07.csv  rows=6,827  SHA256=c4ac60a442ff7d8d...
+  calls_sanitized_2025-08.csv  rows=6,926  SHA256=53ef022fbc08f4d7...
+  calls_sanitized_2025-09.csv  rows=6,851  SHA256=3f083df2f83c448a...
+  calls_sanitized_2025-10.csv  rows=6,859  SHA256=bc6946684e900a25...
+  calls_sanitized_2025-11.csv  rows=6,864  SHA256=ebe685803c3f45b0...
+  calls_sanitized_2025-12.csv  rows=6,857  SHA256=490184e13a3a1e83...
+
+  Total records loaded: 82,335
+
+  30DACC_flag constructed:
+    Positive (any failure): 42,171  (51.2%)
+    Negative (clean exit):  40,164  (48.8%)
+
+======================================================================
+H1 — PREDICTIVE INTEGRITY MODEL (30DACC Logistic Regression)
+======================================================================
+
+  Target:   30DACC_flag (churn | repeat_30d | escalation)
+  Text:     TF-IDF on customer-side transcript (top 100 unigrams/bigrams)
+  Struct:   7 features (VIF-corrected)
+
+  Feature matrix: 82,335 rows × 107 features
+    Structured: 7
+    TF-IDF:     100
+
+  Cross-validation (5-fold stratified):
+    AUC scores: ['0.695', '0.694', '0.699', '0.696', '0.699']
+    Mean AUC:   0.697  ±0.002
+
+  Structured Feature Odds Ratios:
+  Feature                                  OR  Direction
+  -------------------------------------------------------
+  rep_gaming_propensity                 0.981  ≈ NEUTRAL
+  rep_burnout_level                     1.026  ≈ NEUTRAL
+  customer_patience                     0.997  ≈ NEUTRAL
+  customer_churn_risk_effective         1.330  ↑ RISK
+  customer_trust_baseline               0.986  ≈ NEUTRAL
+  distress_term_count                   1.017  ≈ NEUTRAL
+  proxy_true_gap                        0.999  ≈ NEUTRAL
+
+  Top 15 TF-IDF Terms by |Coefficient|:
+  Term                                OR  Direction
+  --------------------------------------------------
+  new phone                        2.069  ↑ RISK
+  for                              2.065  ↑ RISK
+  about                            2.036  ↑ RISK
+  the store                        2.032  ↑ RISK
+  they                             1.910  ↑ RISK
+  it but                           0.524  ↓ PROTECT
+  store                            1.898  ↑ RISK
+  on                               0.546  ↓ PROTECT
+  trying                           1.783  ↑ RISK
+  trying to                        1.783  ↑ RISK
+  and it                           1.774  ↑ RISK
+  my bill                          0.564  ↓ PROTECT
+  much                             0.576  ↓ PROTECT
+  you                              0.597  ↓ PROTECT
+  than                             0.610  ↓ PROTECT
+
+  [SAVED] h1_predictive_integrity_model.png
+======================================================================
+H2 — REAL-TIME LEADING INDICATORS
+    Rupture Intensity + Issue Term Lift as Pre-DAR Early Warning
+======================================================================
+
+  Base churn rate:      0.268  (26.8%)
+  Base 30DACC rate:     0.512  (51.2%)
+
+  Weekly rupture intensity vs proxy/true FCR:
+   Week      N   Rupture   ProxyFCR   TrueFCR    DACC
+  -------------------------------------------------------
+      1   1667     0.470      0.892     0.460   0.521
+      2   1534     0.482      0.889     0.455   0.518
+      3   1682     0.469      0.896     0.436   0.515
+      4   1661     0.475      0.896     0.474   0.503
+      5   1353     0.466      0.903     0.469   0.506
+      6   1757     0.478      0.891     0.455   0.504
+      7   1757     0.476      0.904     0.502   0.494
+      8   1743     0.477      0.894     0.480   0.494
+      9   1540     0.473      0.894     0.472   0.514
+     10   1555     0.472      0.887     0.471   0.502
+     11   1561     0.478      0.903     0.459   0.504
+     12   1622     0.469      0.901     0.478   0.488
+     13   1629     0.474      0.894     0.473   0.516
+     14   1498     0.478      0.901     0.460   0.520
+     15   1630     0.475      0.898     0.490   0.511
+     16   1617     0.478      0.900     0.457   0.528
+     17   1652     0.481      0.896     0.467   0.516
+     18   1368     0.474      0.899     0.470   0.531
+     19   1636     0.468      0.906     0.472   0.542
+     20   1634     0.473      0.889     0.483   0.510
+     21   1518     0.477      0.897     0.462   0.513
+     22   1397     0.477      0.888     0.466   0.508
+     23   1611     0.489      0.891     0.458   0.541
+     24   1715     0.482      0.884     0.457   0.486
+     25   1677     0.474      0.886     0.449   0.527
+     26   1613     0.477      0.885     0.471   0.515
+     27   1366     0.478      0.889     0.492   0.512
+     28   1526     0.474      0.898     0.497   0.509
+     29   1594     0.472      0.914     0.457   0.504
+     30   1657     0.485      0.897     0.459   0.488
+     31   1416     0.468      0.887     0.456   0.520
+     32   1685     0.472      0.897     0.465   0.523
+     33   1571     0.479      0.890     0.461   0.511
+     34   1608     0.476      0.904     0.471   0.504
+     35   1330     0.482      0.885     0.450   0.497
+     36   1611     0.482      0.901     0.484   0.520
+     37   1706     0.485      0.877     0.462   0.521
+     38   1667     0.481      0.906     0.475   0.501
+     39   1640     0.473      0.888     0.468   0.513
+     40   1354     0.496      0.898     0.481   0.521
+     41   1612     0.467      0.906     0.479   0.498
+     42   1609     0.468      0.891     0.482   0.519
+     43   1583     0.478      0.897     0.464   0.519
+     44   1415     0.470      0.886     0.472   0.507
+     45   1677     0.484      0.885     0.457   0.540
+     46   1701     0.482      0.885     0.470   0.499
+     47   1645     0.479      0.885     0.441   0.519
+     48   1354     0.473      0.908     0.496   0.503
+     49   1570     0.484      0.892     0.455   0.504
+     50   1604     0.467      0.901     0.473   0.510
+     51   1595     0.465      0.895     0.466   0.524
+     52   1612     0.479      0.890     0.474   0.524
+
+  Rupture (week N) → DACC (week N+1): r=-0.238, p=0.093
+  Proxy FCR (week N) → DACC (week N+1): r=-0.216, p=0.129
+
+  Interpretation:
+  A positive rupture→DACC correlation confirms rupture leads failure.
+  A positive proxy→DACC correlation (wrong direction) confirms proxy
+  is a lagging and misleading signal relative to true outcome.
+
+  Issue Term Lift (min 20 calls):
+  Term                           N  ChurnLift   DACCLift   ProxyFCR
+  -----------------------------------------------------------------
+  cancel                     10267       1.01       1.29      90.8%
+  again                       6336       1.00       1.36      62.2%
+  ridiculous                 12565       0.99       1.23      87.8%
+  lied                        7574       0.99       1.33      88.7%
+  port                       10737       0.96       1.32      62.6%
+
+  Key observation: Terms with highest churn lift still show high proxy FCR.
+  This confirms the adversarial NLP bypass vulnerability: agents/AI can
+  maintain a high resolution flag even on calls that statistically predict
+  cancellation — the proxy has no corrective gradient from distress language.
+
+  [SAVED] h2_leading_indicators.png
+======================================================================
+H3 — DYNAMIC THRESHOLDING
+    Segment-Level SII Thresholds by Operational Segment
+======================================================================
+
+  Segments derived from scenario groupings (not department/queue —
+  both fields are single-valued in Jan 2025 data):
+    standard  = clean, activation_clean, line_add_legitimate
+    complex   = unresolvable_clean, activation_failed
+    fraud     = fraud_* scenarios (4 variants)
+    gamed     = gamed_metric
+
+  Threshold Calibration Rationale:
+  Segment        VETO   WATCH  Rationale
+  ---------------------------------------------------------------------------
+  standard         60      30  Global defaults. Low structural gap (0.11). Full SII sensiti
+  complex          75      45  Raised thresholds. Gap (0.51) is partly structural (unresolv
+  fraud            45      20  Tightened thresholds. Gap (0.72) is behavioral, not structur
+  gamed            40      18  Tightest thresholds. Gap (0.84) is entirely behavioral (gami
+
+  Segment SII Results:
+  Segment           N   ProxyFCR   TrueFCR     Gap    DAR     SII   Veto   Watch  Status
+  ------------------------------------------------------------------------------------------
+  gamed         10062      98.2%     13.8%   0.843  0.514    42.2     40      18    VETO
+  complex       15049      59.2%      7.8%   0.513  0.298    34.3     75      45      OK
+  fraud         19775      90.8%     18.8%   0.720  0.447    30.7     45      20   WATCH
+  standard      37449      98.6%     86.1%   0.124  0.043     3.5     60      30      OK
+
+  Global SII (uniform thresholds, for comparison):
+  gamed         SII=42.2  global_status=WATCH  seg_status=VETO
+  complex       SII=34.3  global_status=WATCH  seg_status=OK
+  fraud         SII=30.7  global_status=WATCH  seg_status=WATCH
+  standard      SII=3.5  global_status=OK  seg_status=OK
+
+  Where global and segment status diverge, dynamic thresholding is doing
+  useful work: preventing false-positive veto on complex calls, and
+  triggering earlier on fraud/gamed calls where any gap is behavioral.
+
+  [SAVED] h3_dynamic_thresholds.png
+======================================================================
+HARDENING SUMMARY DASHBOARD
+======================================================================
+
+  [SAVED] h0_hardening_summary.png
+  Summary figure written: h0_hardening_summary.png

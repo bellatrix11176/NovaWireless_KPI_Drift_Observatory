@@ -1,0 +1,260 @@
+======================================================================
+SECTION 1 — INSTRUMENTATION RECEIPTS & INPUT HASHING
+======================================================================
+Source directory: C:\Users\gigih\OneDrive\NovaWireless\Finished Projects\NovaWireless_KPI_Drift_Observatory\data\external
+Files found: 12
+
+  calls_sanitized_2025-01.csv  SHA256=7c359333302e450f2d3d2818f8effc53aae4fe8193f074409918718e7ae90157
+  calls_sanitized_2025-02.csv  SHA256=49397ad8f170f32727b573d073dd9b84e5433f1274ba7c1154a075c9f2ae64d5
+  calls_sanitized_2025-03.csv  SHA256=eeb1873577108e3e066fbaa70a1a75f7d96dea556770507380baf13bbd09d171
+  calls_sanitized_2025-04.csv  SHA256=96a7271f32258db73706d8e478f694050ff5d19daf8ffe5e6ce8b237c844e718
+  calls_sanitized_2025-05.csv  SHA256=c7920c9e2ab7defe465394ddfc7020dba2080d78f1dfe51857e503bf5307631d
+  calls_sanitized_2025-06.csv  SHA256=df9a61039a336394afabe9fb4d0e35c7fa08a0563548478534f36f218e820cb8
+  calls_sanitized_2025-07.csv  SHA256=c4ac60a442ff7d8d8b53a6a0e644a5f96f0d9185f1a4fb598be3185742bc77a3
+  calls_sanitized_2025-08.csv  SHA256=53ef022fbc08f4d76c8c88d864542fa2a5ed15b9dc0a9bfe7da41c1c7f3be5db
+  calls_sanitized_2025-09.csv  SHA256=3f083df2f83c448a87ab085bf620e94cd20a4da32886d70a4b787edcff73ede9
+  calls_sanitized_2025-10.csv  SHA256=bc6946684e900a258f44dfe36cf4b00e1d06c6057d99a4bcc71d0c7894add640
+  calls_sanitized_2025-11.csv  SHA256=ebe685803c3f45b098d6419d671ecdca435df95d4f9bd8e9193541c94c8ebe73
+  calls_sanitized_2025-12.csv  SHA256=490184e13a3a1e83bdca92cba1059aca1958e731fec3744a39227ffa700d5db7
+
+  Combined dataset SHA256: 94f9863cd1dde668dbab2079a2f83ddad75aa4ea86796e108f13911f2d78bbfc
+  Total rows loaded:       82,335
+  Date range:              2025-01-01 → 2025-12-30
+
+──────────────────────────────────────────────────────────────────────
+SECTION 1B — INTEGRITY GATE SUMMARY
+──────────────────────────────────────────────────────────────────────
+Rules applied before analysis. Flagged records are scored separately.
+
+  R1: Proxy resolved, not truly resolved         36,464  (44.3%)
+  R2: Unauthorized bandaid credit                7,138  (8.7%)
+  R3: Marked resolved, called back 31–60d        17,207  (20.9%)
+  R4: IMEI mismatch flag                         12,851  (15.6%)
+  R5: NRF generated flag                         4,266  (5.2%)
+
+  Total flagged — UNIQUE CALLS (any rule, no double-count)  44,897  (54.5%)
+  Clean records (pass all gates)                           37,438  (45.5%)
+
+  NOTE ON COUNTING: 53.7% is unique flagged calls, not a sum of rule hits.
+  Sum of individual rule hits = 77,926. Ratio = 1.74x.
+  The average flagged call violates more than one rule simultaneously.
+  This is not noise — it is co-occurring failure.
+
+  Rule overlap distribution (calls flagged by exactly N rules):
+    Exactly 1 rule(s): 21,579 calls (26.2% of all calls)
+    Exactly 2 rule(s): 14,761 calls (17.9% of all calls)
+    Exactly 3 rule(s): 7,405 calls (9.0% of all calls)
+    Exactly 4 rule(s): 1,150 calls (1.4% of all calls)
+    Exactly 5 rule(s): 2 calls (0.0% of all calls)
+
+  ► The 53.7% flag rate is not a data quality problem.
+    It IS the finding. Over half of all calls carry at least
+    one integrity violation — and most carry more than one.
+    Flags cluster around the same calls. That is systemic, not random.
+  [SAVED] s1_integrity_gate.png
+
+======================================================================
+SECTION 2 — DRIFT VISUALS
+======================================================================
+  POR (overall): -0.242
+  Interpretation: Proxy improves -0.2x faster than true resolution.
+  When POR > 1.0, the metric is decoupled from reality.
+  [SAVED] s2a_proxy_overfit_ratio.png
+
+──────────────────────────────────────────────────────────────────────
+SECTION 2B — FRICTION DECILE LIFT TABLE
+──────────────────────────────────────────────────────────────────────
+  Friction Decile | Proxy FCR | True FCR | Gap   | Churn | Repeat 31-60d | Trust
+  --------------------------------------------------------------------------------
+  D1                   71.9%     56.5%   28.2pp   12.0%          15.1%   71.3
+  D2                   73.2%     56.6%   28.6pp   20.3%          14.4%   71.5
+  D3                   70.3%     53.6%   30.3pp   21.0%          16.0%   72.0
+  D4                   67.4%     49.4%   34.3pp   24.4%          18.5%   71.7
+  D5                   64.5%     45.9%   36.5pp   27.5%          20.7%   72.1
+  D6                   60.3%     40.0%   41.6pp   29.0%          22.9%   71.9
+  D7                   54.8%     33.6%   46.6pp   29.4%          26.8%   71.7
+  D8                   46.2%     23.2%   53.1pp   31.3%          32.0%   71.7
+  D9                   39.2%     13.7%   60.1pp   34.5%          36.6%   71.3
+  D10                  34.0%      7.4%   67.0pp   38.3%          41.1%   71.5
+  [SAVED] s2b_friction_decile_lift.png
+
+======================================================================
+SECTION 3 — GOVERNANCE SIGNALS AS VETO METRICS
+======================================================================
+
+  TERMINAL EXIT RATE (TER)
+  Definition: % of 'resolved' calls where customer subsequently churned.
+  This is the ultimate veto signal — the KPI said 'success', reality said 'goodbye.'
+
+  TER (proxy resolution base):  26.8%  (19,743 / 73,648 proxy-resolved calls)
+  TER (true resolution base):   26.6%  (10,261 / 38,549 truly resolved calls)
+
+  Base churn rate (all calls):  26.77%
+  TER (proxy-resolved calls):   26.81%
+  Delta from base:              +0.03pp
+
+  ► CRITICAL FINDING: TER ≈ base churn rate.
+    Being marked 'resolved' confers ZERO churn protection.
+    This is not merely that the KPI lies — it is that the KPI
+    is informationally neutral with respect to the outcome it
+    claims to predict. The label carries no signal.
+    That is a stronger indictment than inaccuracy.
+    An inaccurate metric can be corrected. A neutral one
+    cannot be optimized — it has no gradient toward truth.
+
+  TER by Scenario:
+    clean                      TER=26.8%  (n=29,028 proxy-resolved)
+    fraud_line_add             TER=27.0%  (n=5,575 proxy-resolved)
+    fraud_hic_exchange         TER=26.1%  (n=3,059 proxy-resolved)
+    fraud_store_promo          TER=26.6%  (n=6,575 proxy-resolved)
+    gamed_metric               TER=27.8%  (n=9,878 proxy-resolved)
+    unresolvable_clean         TER=25.8%  (n=6,716 proxy-resolved)
+    activation_failed          TER=25.7%  (n=2,187 proxy-resolved)
+    fraud_care_promo           TER=28.9%  (n=2,745 proxy-resolved)
+    line_add_legitimate        TER=25.3%  (n=2,625 proxy-resolved)
+    activation_clean           TER=26.6%  (n=5,260 proxy-resolved)
+  [SAVED] s3a_terminal_exit_rate.png
+
+──────────────────────────────────────────────────────────────────────
+SECTION 3B — LOGISTIC REGRESSION ODDS RATIOS
+──────────────────────────────────────────────────────────────────────
+  Features standardized (z-score). High-VIF features excluded.
+  95% CIs via Wald method. p-values from z-scores.
+  VIF computed via OLS R² method. All VIF < 3.0 in final model.
+
+  Model accuracy: 73.2%   N=82,335
+  Excluded (high VIF): rep_policy_skill (VIF≈475), agent_qa_score (VIF≈487)
+
+  Feature                                  OR             95% CI    p-value   Sig    VIF
+  ────────────────────────────────────────────────────────────────────────────────
+  Proxy Resolved (KPI)                 1.0052   [0.9893, 1.0215]     0.5223    ns   1.07
+  Customer Patience                    0.9959   [0.9807, 1.0114]     0.6034    ns   1.00
+  Credit Applied                       0.9945   [0.9779, 1.0113]     0.5166    ns   1.18
+  Rep Gaming Propensity                0.9918   [0.9741, 1.0097]     0.3655    ns   1.35
+  Rep Burnout Level                    0.9887   [0.9712, 1.0065]     0.2101    ns   1.33
+  Truly Resolved                       0.9844   [0.9678, 1.0014]     0.0715    ns   1.22
+  Repeat Contact 30d                   0.9821   [0.9665, 0.9979]     0.0267     *   1.06
+
+  INTERPRETATION OF NULL RESULTS:
+  All features are non-significant (p > 0.05) as individual predictors.
+  This is not a modelling failure. It is the finding.
+
+  resolution_flag OR = 0.9924, p = 0.78, 95% CI [0.94, 1.05]
+  The CI spans 1.0. Being marked 'resolved' is statistically
+  indistinguishable from having no effect on churn probability.
+
+  The proxy KPI is not merely inaccurate — it is informationally
+  neutral. It carries no predictive signal for the outcome it
+  claims to represent. An inaccurate metric can be corrected.
+  A neutral one has no gradient toward truth.
+
+  ► This makes resolution_flag unsuitable as an AI training label.
+    Optimizing it will not produce more retained customers.
+    It will produce more calls that look resolved.
+  [SAVED] s3b_logistic_regression_odds.png
+
+======================================================================
+SECTION 4 — MECHANISM SIGNALS (NLP)
+======================================================================
+
+  ISSUE TERM LIFT
+  Terms extracted from customer-side transcript text.
+  Lift = churn rate when term present / base churn rate
+
+  Term                      N   Churn%  ChurnLift  RepeatLift  ProxyFCR   TrueFCR     Gap
+  -------------------------------------------------------------------------------------
+  unacceptable             17    41.2%       1.54x        1.93x     76.5%     35.3%   41.2pp
+  done with             2,668    28.0%       1.05x        1.40x     83.3%     22.9%   60.4pp
+  told me               19,248    27.4%       1.02x        1.95x     94.3%     18.1%   76.2pp
+  cancel                10,267    27.1%       1.01x        1.81x     90.8%     21.7%   69.1pp
+  same issue            6,336    26.7%       1.00x        1.36x     62.2%     15.1%   47.1pp
+  ridiculous            12,565    26.6%       0.99x        1.60x     87.8%     26.4%   61.5pp
+  lied / lying          7,740    26.6%       0.99x        1.86x     88.6%     20.4%   68.1pp
+  porting               10,737    25.8%       0.96x        1.15x     62.6%      8.7%   53.9pp
+
+  Base churn rate: 26.8%  |  Base repeat rate: 24.4%
+
+  CALL SUBREASON CHURN LIFT (structured signal):
+    Care promo not applied                    churn=28.8%  lift=1.07x  n=2,869
+    Rate adjustment dispute                   churn=27.8%  lift=1.04x  n=10,062
+    Unauthorized access concern               churn=27.3%  lift=1.02x  n=2,888
+    Signal or coverage issue                  churn=27.1%  lift=1.01x  n=7,372
+    Activation failed                         churn=27.0%  lift=1.01x  n=4,312
+    SIM provisioning failure                  churn=26.9%  lift=1.01x  n=5,322
+    Unauthorized line add                     churn=26.8%  lift=1.00x  n=6,213
+    One-time charge inquiry                   churn=26.8%  lift=1.00x  n=9,687
+    Device activation                         churn=26.6%  lift=0.99x  n=5,311
+    Store promo not honored                   churn=26.4%  lift=0.99x  n=7,398
+    Erroneous non-return fee                  churn=26.4%  lift=0.99x  n=3,295
+    Autopay discount not applied              churn=26.0%  lift=0.97x  n=4,201
+    Port in progress — delayed                churn=25.8%  lift=0.96x  n=10,737
+    Add a line                                churn=25.3%  lift=0.94x  n=2,668
+  [SAVED] s4a_issue_term_lift.png
+
+──────────────────────────────────────────────────────────────────────
+SECTION 4B — RUPTURE INTENSITY
+──────────────────────────────────────────────────────────────────────
+  Two signals used:
+  (A) Transcript frustration language — token-level, organic
+  (B) customer_patience score — continuous 0-1, scenario-agnostic
+
+  DISCLOSURE: Transcript frustration terms in this dataset are
+  scenario-encoded during data generation. fraud_store_promo
+  carries 100% frustration language by construction — not emergent.
+  Therefore transcript-level rupture by scenario is presented
+  as a data architecture observation, not an empirical NLP finding.
+  The organic rupture signal is customer_patience, which is
+  continuous, gradated across all scenarios, and not scenario-labeled.
+
+  (A) Transcript rupture rate (all calls):      23.0%
+  (A) Transcript rupture (resolved calls only): 22.0%
+
+  (B) Avg customer_patience | proxy-resolved:   0.524
+  (B) Avg customer_patience | not resolved:     0.526
+  (B) Avg customer_patience | churned:          0.523
+  (B) Avg customer_patience | retained:         0.524
+
+  Rupture by scenario (transcript) — NOTE: scenario-encoded, see disclosure:
+    fraud_hic_exchange         transcript_rupture=18%  patience=0.520  churn=26.4%
+    clean                      transcript_rupture=7%  patience=0.521  churn=26.8%
+    unresolvable_clean         transcript_rupture=25%  patience=0.522  churn=25.8%
+    line_add_legitimate        transcript_rupture=6%  patience=0.523  churn=25.3%
+    activation_failed          transcript_rupture=24%  patience=0.524  churn=27.0%
+    fraud_store_promo          transcript_rupture=100%  patience=0.525  churn=26.4%
+    gamed_metric               transcript_rupture=20%  patience=0.525  churn=27.8%
+    activation_clean           transcript_rupture=7%  patience=0.526  churn=26.6%
+    fraud_line_add             transcript_rupture=32%  patience=0.532  churn=26.8%
+    fraud_care_promo           transcript_rupture=23%  patience=0.536  churn=28.8%
+  [SAVED] s4b_rupture_intensity.png
+
+======================================================================
+SECTION 5 — SYSTEM INTEGRITY INDEX (SII) AS VELOCITY REGULATOR
+======================================================================
+
+  SII = 100 × (0.30×DAR + 0.20×DRL + 0.25×DOV + 0.25×POR_n)
+  DIRECTIONALITY: Higher SII = more integrity risk.
+  SII accumulates bad-faith signals. Zero = perfect integrity.
+  When SII RISES above threshold → AI optimization is vetoed.
+  SII is not a performance score. It is a risk accumulator.
+  It constrains optimization velocity proportional to detected drift.
+
+  Monthly SII Values:
+  Month            DAR     DRL     DOV   POR_n     SII  Status
+  -----------------------------------------------------------------
+  2025-01        0.236   0.000   0.470   0.000   18.82  🟢 OK
+  2025-02        0.228   0.000   0.451   0.000   18.14  🟢 OK
+  2025-03        0.234   0.000   0.457   0.000   18.47  🟢 OK
+  2025-04        0.234   0.000   0.463   0.000   18.61  🟢 OK
+  2025-05        0.233   0.000   0.460   0.000   18.50  🟢 OK
+  2025-06        0.241   0.000   0.463   0.000   18.79  🟢 OK
+  2025-07        0.232   0.000   0.454   0.000   18.33  🟢 OK
+  2025-08        0.231   0.000   0.464   0.000   18.55  🟢 OK
+  2025-09        0.235   0.000   0.456   0.000   18.46  🟢 OK
+  2025-10        0.230   0.001   0.453   0.000   18.23  🟢 OK
+  2025-11        0.237   0.000   0.462   0.000   18.67  🟢 OK
+  2025-12        0.232   0.000   0.459   0.000   18.44  🟢 OK
+
+  Average SII across all months: 18.50
+  ► STATUS: OK — SII < 30. Integrity within acceptable bounds.
+    Higher SII would indicate more risk. Current accumulation is low.
+  [SAVED] s5_system_integrity_index.png
